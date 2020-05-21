@@ -1,0 +1,8 @@
+---
+ansible_network_os: ios
+ansible_user: ansible
+ansible_password: Zg&XlZ5D@k35
+ansible_become: yes
+ansible_become_method: enable
+ansible_become_password: cisco
+...

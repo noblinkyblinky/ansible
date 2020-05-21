@@ -1,0 +1,43 @@
+---
+  - name: Reset Lab
+    hosts: routers
+    gather_facts: no
+    connection: network_cli
+
+    tasks: 
+
+      - name: Reset Lab config
+        ios_config:
+          lines:
+            - no logging host 10.76.1.25
+            - no logging trap notification
+            - no clock timezone EST -5 0
+            - no clock summer-time EDT recurring
+            - no service timestamps debug datetime msec localtime show-timezone
+            - no service timestamps log datetime msec localtime show-timezone
+            - no ip domain lookup source-interface GigabitEthernet0/0
+            - no ip name-server 208.67.220.220
+            - no ip name-server 208.67.222.222
+            - no ntp source GigabitEthernet0/0
+            - no ntp server time.nist.gov
+            - no ntp server time.google.com
+            - no banner login
+            - no router eigrp 10
+            - no interface Loopback0
+
+      - name: Reset WAN Interface
+        ios_config:
+          lines:
+          - no description ELAN
+          - no ip address 172.31.255.{{ node_id }} 255.255.255.0
+          - shut
+          parents: interface {{ wan_if }}    
+      
+      - name: Reset LAN Interface
+        ios_config:
+          lines:
+          - no description LAN
+          - no ip address 192.168.{{ node_id }}.1 255.255.255.0
+          - shut
+          parents: interface {{ lan_if }}
+...

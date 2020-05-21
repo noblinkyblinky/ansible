@@ -1,0 +1,7 @@
+---
+ansible_host: 10.76.1.30
+node_id: 253
+mgmt_if: GigabitEthernet1
+wan_if: GigabitEthernet2
+lan_if: Loopback192
+...

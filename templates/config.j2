@@ -1,0 +1,20 @@
+hostname {{ inventory_hostname }}
+ip domain name {{ domain_name }}
+cyrpto key gen rsa mod 1024
+ip ssh v 2
+username admin secret cisco
+interface loopback0
+ip address 10.1.1.{{ node_id }} 255.255.255.255
+exit
+intface gigabitethernet0/1
+ip address 172.16.1.{{ node_id }} 255.255.255.0
+no shut
+exit
+snmp-server contact {{ snmp_contact }}
+line con 0
+logging sync
+login local
+line vty 0 15
+logging sync
+transport input ssh
+exit

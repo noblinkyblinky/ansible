@@ -1,0 +1,49 @@
+---
+  - name: standard config
+    hosts: routers
+    gather_facts: no
+    connection: network_cli
+
+    tasks: 
+       
+      - name: Configure the Login Banner
+        ios_banner:
+          banner: login
+          text: |
+            Welcome to {{ inventory_hostname }}!
+          state: present
+
+      - name: Configure Name Servers
+        ios_system:
+          lookup_source: "{{ mgmt_if }}"
+          lookup_enabled: yes
+          name_servers:
+            - "{{ name_server1 }}"
+            - "{{ name_server2 }}"
+          state: present
+
+      - name: Timezome and Timestamps
+        ios_config:
+          lines:
+            - clock timezone EST -5 0
+            - clock summer-time EDT recurring
+            - service timestamps debug datetime msec localtime show-timezone
+            - service timestamps log datetime msec localtime show-timezone
+
+      - name: Logging 
+        ios_config:
+          lines:
+            - logging host {{ log_host }}
+            - logging trap notifications
+      
+      - name: Set NTP Server
+        ios_ntp:
+          server: "{{ ntp_server }}"
+          source_int: "{{ mgmt_if }}"
+          logging: false
+          state: present
+
+      - name: save running config to startup when modified
+        ios_config:
+          save_when: modified
+...

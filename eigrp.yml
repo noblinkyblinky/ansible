@@ -1,0 +1,41 @@
+---
+  - name: eigrp-deploy
+    hosts: routers
+    gather_facts: no
+    connection: network_cli
+
+    tasks: 
+
+      - name: WAN Interface Config
+        ios_config:
+          lines:
+          - description ELAN
+          - ip address 172.31.255.{{ node_id }} 255.255.255.0
+          - no shut
+          parents: interface {{ wan_if }}    
+      
+      - name: LAN Interface Config
+        ios_config:
+          lines:
+          - description LAN
+          - ip address 192.168.{{ node_id }}.1 255.255.255.0
+          - no shut
+          parents: interface {{ lan_if }}
+
+      - name: Int Loopback0
+        ios_config:
+          lines:
+          - description Loopback
+          - ip address 192.168.255.{{ node_id }} 255.255.255.255
+          parents: interface Loopback0
+
+      - name: EIGRP
+        ios_config:
+          lines:
+          - eigrp router-id 192.168.255.{{ node_id }}
+          - network 192.168.255.{{ node_id }} 0.0.0.0
+          - network 172.31.255.0 0.0.0.255
+          - network 192.168.{{ node_id }}.0 0.0.0.255
+          - passive-interface {{ lan_if }}
+          parents: router eigrp {{ eigrp_asn }}
+...
