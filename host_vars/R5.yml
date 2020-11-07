@@ -1,7 +1,0 @@
----
-ansible_host: 10.76.1.191
-node_id: 5
-mgmt_if: GigabitEthernet0/0
-wan_if: GigabitEthernet0/1
-lan_if: GigabitEthernet0/2
-...
